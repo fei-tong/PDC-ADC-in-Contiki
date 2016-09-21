@@ -5,6 +5,7 @@ Pipelined Data Collection (PDC) takes into account both the pipelined data colle
 PDC has as been published in IEEE Sensors Journal
 
 F. Tong, R. Zhang, J. Pan, “One Handshake Can Achieve More: An Energy-Efficient, Practical Pipelined Data Collection for Duty-Cycled Sensor Networks”, IEEE Sensors Journal, 16(9):3308–3322, May 2016.
+
 http://ieeexplore.ieee.org/document/7397877/?arnumber=7397877
 
 ## ADC
