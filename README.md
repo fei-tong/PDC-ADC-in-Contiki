@@ -19,5 +19,5 @@ The code was developed based on contiki 3.0. The provided code has been tested a
 * Run cooja simulator
 * Load `PDC_ADC/PDC_board_sim/ADC-PDC-7.csc` in cooja simulator
 
-## Parameters Configuration
+## Parameters configuration
 The code parameters can be configured in `PDC_ADC/PDC_board_sim/Makefile`. For example, if `ADCSC_SUPPORT=0`, it is just PDC without the ADC function; othewise ADC is supported. The comments for other parameters can be found in the `Makefile`.
