@@ -4,17 +4,17 @@
  *		Implementation: inter-layer incorporation Design Towards an Effective Collection Protocol (ECP)
  * 		based on the PRIMAC power-saving radio duty cycling protocol
  * \author
- *		Fei Tong <tongfei@uvic.ca>      
+ *		F. Tong <tongfei@uvic.ca>      
  * \date 
- *		state:	Dec. 01, 2014 
+ *		start:	Dec. 01, 2014 
  *		update:	Nov. 09, 2015
- *		New update: Feb. 14, 2016       
+ *		New update: Sep. 21, 2016       
  * \description:
  *		Current functions: duty-cycled, pipelined scheduleing; 
  * 						schedule synchronization; 
  *						data-gathering tree establishment and maintenance; 
- *		Will add modules: 	address-free;
- *						dynamic duty cycle: single-channel; multi-channel
+ *						address-free;
+ *						dynamic duty cycle: single-channel;
  */ 
 	  //temperature related    
 #if ZOLERTIA_Z1
@@ -27,7 +27,7 @@
 #include "dev/radio.h"
 #include "dev/watchdog.h"
 #include "lib/random.h"
-#include "net/mac/primac/primac.h"
+#include "net/mac/pdcadc/pdcadc.h"
 #include "net/netstack.h"
 #include "net/rime/rime.h"
 #include "sys/compower.h"
@@ -100,8 +100,8 @@ static struct rtimer rt;
 static struct ctimer grade_start_ctimer; /*ctimer for sink to broadcast grade message*/
 static struct pt pt;
 
-static volatile uint8_t primac_is_on = 0; /*typedef unsigned char   uint8_t;*/
-static volatile uint8_t primac_keep_radio_on = 0;
+static volatile uint8_t pdcadc_is_on = 0; /*typedef unsigned char   uint8_t;*/
+static volatile uint8_t pdcadc_keep_radio_on = 0;
 
 static volatile unsigned char we_are_sending = 0;
 static volatile unsigned char radio_is_on = 0;
@@ -348,8 +348,8 @@ struct pri_hdr_t {
 static const int hdr_len = sizeof(struct pri_hdr_t);
 //static const int control_msg_len = sizeof(struct control_msg_t); 
 
-//typedef uint16_t priaddr_t; //primac address type
-typedef int8_t pri_grade_t; //primac grade type
+//typedef uint16_t priaddr_t; //pdcadc address type
+typedef int8_t pri_grade_t; //pdcadc grade type
 struct grade_msg_t{//the structure of the grade message
 	pri_grade_t grade;
 	uint16_t state_dur;
@@ -458,7 +458,7 @@ struct cts_msg_t{//the structure of the cts message
 	//#endif
 		//uint16_t 	local_rtimer_second; //RTIMER_SECOND
 	}__attribute__((packed));
-	/* List of packets to be sent by primac */
+	/* List of packets to be sent by pdcadc */
 	struct rdc_pri_buf {
 	  	struct rdc_pri_buf *next;
 	  	struct data_msg_t data;
@@ -511,7 +511,7 @@ struct pri_control_t{
 };
 static volatile struct pri_control_t pri_control;
 
-struct pri_attribute_t //attributes maintained by primac for scheduling
+struct pri_attribute_t //attributes maintained by pdcadc for scheduling
 {
 	pri_grade_t grade;/*grade the node is in.*/
 	pri_grade_t temp_grade; /*temporary grade*/
@@ -1153,7 +1153,7 @@ static void
 pri_schedule_powercycle_fixed(struct rtimer *r_t, rtimer_clock_t fixed_time)
 {
 	int r;
-	if(primac_is_on)
+	if(pdcadc_is_on)
 	{
 	#if 1
 		rtimer_clock_t now = RTIMER_NOW();
@@ -3080,7 +3080,7 @@ start_grade(void *ptr)
 	uint32_t state_period;
 	state_period = pri_state_period();
 	pri_attribute.state_start = RTIMER_NOW();
-	if(primac_is_on)
+	if(pdcadc_is_on)
 	{
 		rtimer_set(&rt, pri_attribute.state_start+ state_period, 1, (void (*)(struct rtimer *, void *))pri_powercycle, NULL); /*enter into 'S' state*/
 	}
@@ -3194,7 +3194,7 @@ pri_init(void)
 	pri_attribute.dursleep = DURSLEEP;
 	pri_attribute.durcycle = DURCYCLE;
 	print_definition();
-  	//primac_is_on= 1;
+  	//pdcadc_is_on= 1;
 	random_init(linkaddr_node_addr.u8[0]); //initialize the random seed
 
 #if ZOLERTIA_Z1
@@ -3394,7 +3394,7 @@ init(void)
 	//rtimer_clock_t state_period;
 	
 	PT_INIT(&pt);
-	primac_is_on= 1;
+	pdcadc_is_on= 1;
 	pri_init();
 }
 
@@ -3462,7 +3462,7 @@ pri_gdps(uint32_t receiving_pkt_time, int8_t msg_grade, char msg_state, uint16_t
 	
 	//pri_attribute.grade= control_msg->grade + 1;
 	//printf("in pri_gdps, after transfer, msg_state_dur:%d.\n",msg_state_dur);
-	if(primac_is_on == 0)
+	if(pdcadc_is_on == 0)
 	{
 		return;
 	}
@@ -4066,11 +4066,11 @@ control messages: grade/rts/cts/ack
 			}*/
 			else
 			{
-				PRINTFA("primac: Cannot determine the type of the received packet.\n");
+				PRINTFA("pdcadc: Cannot determine the type of the received packet.\n");
 			}
 		}
 	}else{
-		PRINTFA("primac: failed to parse (%u)\n", packetbuf_totlen());
+		PRINTFA("pdcadc: failed to parse (%u)\n", packetbuf_totlen());
 	}
 }
 
@@ -4079,7 +4079,7 @@ control messages: grade/rts/cts/ack
 static void
 on(void)
 {
-  if(primac_is_on && radio_is_on == 0) {
+  if(pdcadc_is_on && radio_is_on == 0) {
     radio_is_on = 1;
     NETSTACK_RADIO.on();
   }
@@ -4088,7 +4088,7 @@ on(void)
 static void
 off(void)
 {
-  if(primac_is_on && radio_is_on != 0 && primac_keep_radio_on == 0) {
+  if(pdcadc_is_on && radio_is_on != 0 && pdcadc_keep_radio_on == 0) {
     radio_is_on = 0;
     NETSTACK_RADIO.off();
   }
@@ -4099,9 +4099,9 @@ off(void)
 static int
 turn_on(void)
 {
-  if(primac_is_on == 0) {
-    primac_is_on = 1;
-    primac_keep_radio_on = 0;
+  if(pdcadc_is_on == 0) {
+    pdcadc_is_on = 1;
+    pdcadc_keep_radio_on = 0;
 	pri_init();
   }
   return 1;
@@ -4110,8 +4110,8 @@ turn_on(void)
 static int
 turn_off(int keep_radio_on)
 {
-  primac_is_on = 0;
-  primac_keep_radio_on = keep_radio_on;
+  pdcadc_is_on = 0;
+  pdcadc_keep_radio_on = keep_radio_on;
   pri_free_list(pri_neighbor_parent_memb,pri_neighbor_parent_list);
   pri_free_list(pri_neighbor_child_memb,pri_neighbor_child_list);
   pri_free_list(rdc_pri_buf_memb,rdc_pri_buf_list);
@@ -4138,8 +4138,8 @@ duty_cycle(void)
   //return;
 }
 /*---------------------------------------------------------------------------*/
-const struct rdc_driver primac_driver = {
-  "PRIMAC",
+const struct rdc_driver pdcadc_driver = {
+  "PDC_ADC",
   init,
   pri_qsend_packet,
   pri_qsend_list,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, Swedish Institute of Computer Science.
+ * Copyright (c) 2006, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,18 +32,58 @@
 
 /**
  * \file
- *         Header file for the ContikiMAC radio duty cycling protocol
+ *         A very simple Contiki application showing how Contiki programs look
  * \author
  *         Adam Dunkels <adam@sics.se>
  */
 
-#ifndef PRIMAC_H
-#define PRIMAC_H
+#include "contiki.h"
+#include "powertrace.h"
+#include "lib/random.h"
+#include "net/netstack.h"
+#include "net/rime/rime.h"
 
-#include "sys/rtimer.h"
-#include "net/mac/rdc.h"
-#include "dev/radio.h"
+#include <stdio.h> /* For printf() */
 
-extern const struct rdc_driver primac_driver;
+//#ifndef  DATA_INTERVAL
+//	#define DATA_INTERVAL	2
+//#endif
+/*---------------------------------------------------------------------------*/
+PROCESS(hello_world_process, "ADC: Hello world process");
+AUTOSTART_PROCESSES(&hello_world_process);
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(hello_world_process, ev, data)
+{
+  PROCESS_BEGIN();
 
-#endif /* PRIMAC_H */
+  //powertrace_start(CLOCK_SECOND * 2); 
+  
+  printf("Hello, world\n");
+  //printf("DATA_INTERVAL = %u.\n",DATA_INTERVAL);
+#if 1
+  if(!(linkaddr_node_addr.u8[0] == 1 && linkaddr_node_addr.u8[1] == 0)) ///not sink
+  {
+	  static struct etimer periodic;
+	  static struct etimer et;
+	  /* Allow some time for the network to settle. */
+	  etimer_set(&et, (60*3*CLOCK_SECOND));
+	  PROCESS_WAIT_UNTIL(etimer_expired(&et));
+	  etimer_set(&et, (60*3*CLOCK_SECOND));
+	  PROCESS_WAIT_UNTIL(etimer_expired(&et));
+	  //etimer_set(&periodic, CLOCK_SECOND * (random_rand()%(60)));
+	  while(1)
+	  {
+		  if(etimer_expired(&periodic)) 
+		  {
+			  etimer_set(&periodic, CLOCK_SECOND * (DATA_INTERVAL));// + random_rand()%10);
+			  //etimer_set(&et, random_rand() % (CLOCK_SECOND * 10));
+   		  } 
+		  PROCESS_WAIT_EVENT();
+		  NETSTACK_RDC.send(NULL,NULL);
+	  }
+  }
+ #endif
+  
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/
