@@ -15,9 +15,9 @@ F. Tong, J. Pan, “Adaptive Data Collection with Free Addressing and Dynamic Du
 
 ## How to use the code
 The code was developed based on contiki 3.0. The provided code has been tested and worked fine. To run the code, 
-* put the folder `PDC_ADC` in `contiki/examples`
-* run cooja simulator
-* open `PDC_ADC/PDC_board_sim/ADC-PDC-7.csc` in cooja simulator
+* Copy the folder `PDC_ADC` in `contiki/examples`
+* Run cooja simulator
+* Load `PDC_ADC/PDC_board_sim/ADC-PDC-7.csc` in cooja simulator
 
 ## Parameters Configuration
 The code parameters can be configured in `PDC_ADC/PDC_board_sim/Makefile`. For example, if `ADCSC_SUPPORT=0`, it is just PDC without the ADC function; othewise ADC is supported. The comments for other parameters can be found in the `Makefile`.
