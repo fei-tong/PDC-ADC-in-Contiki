@@ -13,6 +13,10 @@ The work on ADC has been accepted by Qshine 2016:
 
 F. Tong, J. Pan, “Adaptive Data Collection with Free Addressing and Dynamic Duty-Cycling for Sensor Networks”, Accepted for publication, EAI International Conference on Heterogeneous Networking for Quality, Reliability, Security and Robustness (QShine), May 2016.
 
+and accepted by MONET:
+
+F. Tong, J. Pan, “ADC: an Adaptive Data Collection Protocol with Free Addressing and Dynamic Duty-Cycling for Sensor Networks”, Mobile Networks and Applications 2017. (https://link.springer.com/article/10.1007%2Fs11036-017-0850-9)
+
 ## How to use the code
 The code was developed based on contiki 3.0. The provided code has been tested and worked fine. To run the code, 
 * Copy the folder `PDC_ADC` in `contiki/examples`
