@@ -9,7 +9,7 @@ PDCMACDIR=..
 PROJECTDIRS += $(PDCMACDIR) 
 TIMEDATE=`date +%Y%m%d-%H%M`
 
-#for local version pdcadc
+#for local version pdcadc 
 CONTIKIDIRS += $(PDCMACDIR)/net/mac/pdcadc
 # original: pdcadc_board.c
 CONTIKI_SOURCEFILES += pdcadc.c 
@@ -34,7 +34,7 @@ CFLAGS+= -DCMD_PROC_GRADE_BASED_ON_ADDR_SUPPORT=$(PROC_GRADE_BASED_ON_ADDR_SUPPO
 NODES_NUM_PER_GRADE ?= 2 
 CFLAGS+= -DCMD_NODES_NUM_PER_GRADE=$(NODES_NUM_PER_GRADE)
 
-ID_FOR_Z_ONE ?= 1 #The ID assigned to the Z1 1.0 mote
+ID_FOR_Z_ONE ?= 1 #The ID assigned to the Z1 1.0 mote 
 CFLAGS+= -DCMD_ID_FOR_Z_ONE=$(ID_FOR_Z_ONE)
 ID_FOR_Z_TWO ?= 2 #The ID assigned to the Z1 2.0 mote
 CFLAGS+= -DCMD_ID_FOR_Z_TWO=$(ID_FOR_Z_TWO)
