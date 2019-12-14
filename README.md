@@ -6,6 +6,8 @@ The work has been published in IEEE Internet of Things Journal.
 
 F. Tong, S. He, J. Pan, “Modeling and Analysis for Data Collection in Duty-Cycled Linear Sensor Networks with Pipelined-Forwarding Feature”, IEEE Internet of Things Journal, 6(6):9489-9502, Dec. 2019.
 
+https://ieeexplore.ieee.org/document/8765632
+
 ## PDC 
 The work on PDC has as been published in IEEE Sensors Journal
 
