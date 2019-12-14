@@ -1,6 +1,11 @@
 # PDC-ADC
 Pipelined Data Collection (PDC) takes into account both the pipelined data collection and the underlying schedule synchronization over duty-cycled radios practically and comprehensively. It integrates all its components in a natural and seamless way to simplify the protocol implementation and to achieve a high energy efficiency and low packet delivery latency. Based on PDC, an Adaptive Data Collection (ADC) protocol is further proposed to achieve dynamic duty-cycling and free addressing, which can improve network heterogeneity, load adaptivity, and energy efficiency. Both PDC and ADC have been implemented in Contiki 3.0, and evaluated through a testbed built based on two hardware platforms, as well as through Cooja simulation.
 
+## Data Collection in duty-cycled LSN
+The work has been published in IEEE Internet of Things Journal.
+
+F. Tong, S. He, J. Pan, “Modeling and Analysis for Data Collection in Duty-Cycled Linear Sensor Networks with Pipelined-Forwarding Feature”, IEEE Internet of Things Journal, 6(6):9489-9502, Dec. 2019.
+
 ## PDC 
 The work on PDC has as been published in IEEE Sensors Journal
 
